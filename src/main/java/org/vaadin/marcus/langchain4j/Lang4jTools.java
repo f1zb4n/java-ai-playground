@@ -20,8 +20,9 @@ public class Lang4jTools {
     }
 
     @Tool
-    public void changeBooking(String bookingNumber, String firstName, String lastName, String date, String from, String to) {
-        service.changeBooking(bookingNumber, firstName, lastName, date, from, to);
+    public void changeBooking(String bookingNumber, String firstName, String lastName, String date, String from,
+            String to, String bookingClass) {
+        service.changeBooking(bookingNumber, firstName, lastName, date, from, to, bookingClass);
     }
 
     @Tool

@@ -1,12 +1,16 @@
 package org.vaadin.marcus.service;
 
-import org.springframework.stereotype.Service;
-import org.vaadin.marcus.data.*;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import org.springframework.stereotype.Service;
+import org.vaadin.marcus.data.Booking;
+import org.vaadin.marcus.data.BookingClass;
+import org.vaadin.marcus.data.BookingData;
+import org.vaadin.marcus.data.BookingStatus;
+import org.vaadin.marcus.data.Customer;
 
 @Service
 public class FlightService {
@@ -22,7 +26,8 @@ public class FlightService {
     private void initDemoData() {
         List<String> firstNames = List.of("John", "Jane", "Michael", "Sarah", "Robert");
         List<String> lastNames = List.of("Doe", "Smith", "Johnson", "Williams", "Taylor");
-        List<String> airportCodes = List.of("LAX", "SFO", "JFK", "LHR", "CDG", "ARN", "HEL", "TXL", "MUC", "FRA", "MAD", "SJC");
+        List<String> airportCodes = List.of("LAX", "SFO", "JFK", "LHR", "CDG", "ARN", "HEL", "TXL", "MUC", "FRA", "MAD",
+                "SJC");
         Random random = new Random();
 
         var customers = new ArrayList<Customer>();
@@ -38,9 +43,10 @@ public class FlightService {
             customer.setFirstName(firstName);
             customer.setLastName(lastName);
 
-            LocalDate date = LocalDate.now().plusDays(2*i);
+            LocalDate date = LocalDate.now().plusDays(2 * i);
 
-            Booking booking = new Booking("10" + (i + 1), date, customer, BookingStatus.CONFIRMED, from, to, bookingClass);
+            Booking booking = new Booking("10" + (i + 1), date, customer, BookingStatus.CONFIRMED, from, to,
+                    bookingClass);
             customer.getBookings().add(booking);
 
             customers.add(customer);
@@ -72,14 +78,16 @@ public class FlightService {
         return toBookingDetails(booking);
     }
 
-    public void changeBooking(String bookingNumber, String firstName, String lastName, String newDate, String from, String to) {
+    public void changeBooking(String bookingNumber, String firstName, String lastName, String newDate, String from,
+            String to, String bookingClass) {
         var booking = findBooking(bookingNumber, firstName, lastName);
-        if(booking.getDate().isBefore(LocalDate.now().plusDays(1))){
+        if (booking.getDate().isBefore(LocalDate.now().plusDays(1))) {
             throw new IllegalArgumentException("Booking cannot be changed within 24 hours of the start date.");
         }
         booking.setDate(LocalDate.parse(newDate));
         booking.setFrom(from);
         booking.setTo(to);
+        booking.setBookingClass(BookingClass.valueOf(bookingClass));
     }
 
     public void cancelBooking(String bookingNumber, String firstName, String lastName) {
@@ -90,7 +98,7 @@ public class FlightService {
         booking.setBookingStatus(BookingStatus.CANCELLED);
     }
 
-    private BookingDetails toBookingDetails(Booking booking){
+    private BookingDetails toBookingDetails(Booking booking) {
         return new BookingDetails(
                 booking.getBookingNumber(),
                 booking.getCustomer().getFirstName(),
@@ -99,7 +107,6 @@ public class FlightService {
                 booking.getBookingStatus(),
                 booking.getFrom(),
                 booking.getTo(),
-                booking.getBookingClass().toString()
-        );
+                booking.getBookingClass().toString());
     }
 }
